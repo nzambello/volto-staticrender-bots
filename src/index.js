@@ -120,12 +120,14 @@ const renderPage = async (url) => {
   return $.html();
 };
 
-export const renderStaticMiddleware = (url) => {
+export const renderStaticMiddleware = () => {
   const middleware = express.Router();
 
   middleware.id = 'volto-staticrender-bots';
   middleware.all('**', (req, res, next) => {
+    const url = `${req.protocol}://${req.hostname}${req.originalUrl}`;
     const ua = req.headers['user-agent'];
+    console.log('ua', ua);
     if (
       ua === undefined ||
       !userAgentPattern.test(ua) ||
@@ -144,8 +146,9 @@ export const renderStaticMiddleware = (url) => {
 export default (config) => {
   config.settings.expressMiddleware = [
     ...config.settings.expressMiddleware,
-    renderStaticMiddleware(config.settings.apiPath),
+    renderStaticMiddleware,
   ];
 
   return config;
+};
 };
