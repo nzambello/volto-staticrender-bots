@@ -24,6 +24,54 @@ const botUserAgents = [
 ];
 const userAgentPattern = new RegExp(botUserAgents.join('|'), 'i');
 
+const staticFileExtensions = [
+  'ai',
+  'avi',
+  'css',
+  'dat',
+  'dmg',
+  'doc',
+  'doc',
+  'exe',
+  'flv',
+  'gif',
+  'ico',
+  'iso',
+  'jpeg',
+  'jpg',
+  'js',
+  'less',
+  'm4a',
+  'm4v',
+  'mov',
+  'mp3',
+  'mp4',
+  'mpeg',
+  'mpg',
+  'pdf',
+  'png',
+  'ppt',
+  'psd',
+  'rar',
+  'rss',
+  'svg',
+  'swf',
+  'tif',
+  'torrent',
+  'ttf',
+  'txt',
+  'wav',
+  'wmv',
+  'woff',
+  'xls',
+  'xml',
+  'zip',
+];
+const excludeUrlPattern = new RegExp(
+  `\\.(${staticFileExtensions.join('|')})$`,
+  'i',
+);
+
 const renderPage = async (url) => {
   const browser = await puppeteer.launch();
   const page = await browser.newPage();
@@ -78,7 +126,11 @@ export const renderStaticMiddleware = (url) => {
   middleware.id = 'volto-staticrender-bots';
   middleware.all('**', (req, res, next) => {
     const ua = req.headers['user-agent'];
-    if (ua === undefined || !userAgentPattern.test(ua)) {
+    if (
+      ua === undefined ||
+      !userAgentPattern.test(ua) ||
+      excludeUrlPattern.test(req.path)
+    ) {
       next();
       return;
     }
