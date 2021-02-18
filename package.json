@@ -11,5 +11,10 @@
   },
   "scripts": {
     "release": "release-it"
+  },
+  "dependencies": {
+    "cheerio": "^1.0.0-rc.5",
+    "puppeteer": "^7.1.0",
+    "srcset": "^3.0.0"
   }
 }
